@@ -1,0 +1,39 @@
+body {
+    background-image: url("../images/Hell.jpg");
+    font-weight: bold;
+}
+
+.jumbotron {
+    opacity: .75;
+    background: linear-gradient(yellow, red)
+}
+
+header {
+    font-family: "Impact";
+}
+
+#table-container {
+    background-color: white;
+    opacity: .85;
+    border: 3px double green;
+}
+
+#table-header {
+    background-color: lightgreen;
+}
+
+#form-container {
+    background-color: white;
+    opacity: .85;
+    border: 3px double blue;
+}
+
+#form-header {
+    background-color: lightblue
+}
+
+footer {
+    color: #ffffff;
+    background-color: #666666;
+    height: 40px;
+}

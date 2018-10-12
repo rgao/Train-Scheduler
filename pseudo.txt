@@ -1,0 +1,11 @@
+function:
+    takes daily initial time as argument
+    finds and returns minutes until next arrival and time of next arrival
+
+button on click:
+    add new train as a object in firebase
+
+database on child_added:
+    calls next train function
+    retrieves returned values
+    displays all data onto html
