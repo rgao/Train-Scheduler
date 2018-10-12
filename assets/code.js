@@ -4,6 +4,13 @@ $(document).ready(function() {
         $("#real-time").text(moment())
     }, 1000)
 
+    // setInterval(function () {
+    //     $(".data-row").each(function () {
+    //         var dynamicMUA = nextTrain(initial, this.children[2].textContent)
+    //     })
+        
+    // }, 6000)
+
     var config = {
         apiKey: "AIzaSyC5xcF9mDRgorYXHdxoXEoHaJoLRzLORSg",
         authDomain: "train-scheduler-1e250.firebaseapp.com",
@@ -16,12 +23,19 @@ $(document).ready(function() {
     firebase.initializeApp(config);
     var database = firebase.database();
 
+    // database.ref().once("value", function(snapshot) {
+    //     console.log(snapshot.val())
+    //     snapshot.forEach(function(childSnapshot) {
+    //         console.log(childSnapshot.val().frequency)
+    //     })
+    // })
+
     var nextTrain = function(initialTime, freq) {
         var initialTime = moment(initialTime, "HH:mm").subtract(1, "years");
         var currentFromInitial = moment().diff(moment(initialTime), "minutes");
         var minutesSinceArrival = currentFromInitial % freq;
         var minutesUntilArrival = freq - minutesSinceArrival;
-        var nextArrival = moment(moment().add(minutesUntilArrival, "minutes")).format("hh:mm");
+        var nextArrival = moment(moment().add(minutesUntilArrival, "minutes")).format("HH:mm");
         return [minutesUntilArrival, nextArrival];
     };
 
@@ -42,15 +56,16 @@ $(document).ready(function() {
     });
 
     database.ref().on("child_added", function(childSnapshot) {
+        var a = [];
+
         var incomingTrain = nextTrain(childSnapshot.val().start, childSnapshot.val().frequency);
         nextTrainIn = incomingTrain[0];
         nextArrivalTime = incomingTrain[1];
-        console.log(childSnapshot.val())
 
-        $("tbody").append("<tr>" + 
+        $("tbody").append("<tr class='data-row'>" + 
         "<th scope='row'>" + childSnapshot.val().name +
         "</th><td>" + childSnapshot.val().destination +
-        "</td><td>" + childSnapshot.val().frequency +
+        "</td><td class='freq'>" + childSnapshot.val().frequency +
         "</td><td>" + nextArrivalTime +
         "</td><td>" + nextTrainIn +
         "</td></tr>");

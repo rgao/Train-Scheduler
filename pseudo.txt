@@ -9,3 +9,16 @@ database on child_added:
     calls next train function
     retrieves returned values
     displays all data onto html
+
+remove button:
+    add remove column with empty name
+    append remove button to ever child_added 
+
+    document on remove click:
+
+dynamic mintues remaining:
+    set interval(
+        function(
+            calls function
+        ), 60000
+    )
