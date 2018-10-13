@@ -7,10 +7,11 @@ $(document).ready(function() {
     // dynamically update minutes until arrival
     setInterval(function () {
         $(".data-row").each(function () {
-            var dynamicMUA = nextTrain($(this).attr("data-init"), this.children[2].textContent);
-            this.children[4].textContent = dynamicMUA[0];
+            var dynamicTUA = nextTrain($(this).attr("data-init"), this.children[2].textContent);
+            this.children[4].textContent = dynamicTUA[0];
+            console.log(dynamicTUA[0])
         })        
-    }, 60000)
+    }, 1000)
 
     var config = {
         apiKey: "AIzaSyC5xcF9mDRgorYXHdxoXEoHaJoLRzLORSg",
@@ -26,11 +27,12 @@ $(document).ready(function() {
 
     var nextTrain = function(initialTime, freq) {
         var initialTime = moment(initialTime, "HH:mm").subtract(1, "years");
-        var currentFromInitial = moment().diff(moment(initialTime), "minutes");
-        var minutesSinceArrival = currentFromInitial % freq;
-        var minutesUntilArrival = freq - minutesSinceArrival;
-        var nextArrival = moment(moment().add(minutesUntilArrival, "minutes")).format("HH:mm");
-        return [minutesUntilArrival, nextArrival];
+        var secondsFromInitial = moment().diff(moment(initialTime), "seconds");
+        var secondsSinceArrival = secondsFromInitial % (freq*60);
+        var secondsUntilArrival = (freq*60) - secondsSinceArrival;
+        var timeUntilArrival = moment(secondsUntilArrival*1000).format('mm:ss');
+        var nextArrival = moment(moment().add(secondsUntilArrival/60, "minutes")).format("HH:mm");
+        return [timeUntilArrival, nextArrival];
     };
 
     $("#submitButton").on("click", function(event) {
@@ -50,8 +52,6 @@ $(document).ready(function() {
     });
 
     database.ref().on("child_added", function(childSnapshot) {
-        var a = [];
-
         var incomingTrain = nextTrain(childSnapshot.val().start, childSnapshot.val().frequency);
         nextTrainIn = incomingTrain[0];
         nextArrivalTime = incomingTrain[1];
