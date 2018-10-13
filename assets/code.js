@@ -4,12 +4,13 @@ $(document).ready(function() {
         $("#real-time").text(moment())
     }, 1000)
 
-    // setInterval(function () {
-    //     $(".data-row").each(function () {
-    //         var dynamicMUA = nextTrain(initial, this.children[2].textContent)
-    //     })
-        
-    // }, 6000)
+    // dynamically update minutes until arrival
+    setInterval(function () {
+        $(".data-row").each(function () {
+            var dynamicMUA = nextTrain($(this).attr("data-init"), this.children[2].textContent);
+            this.children[4].textContent = dynamicMUA[0];
+        })        
+    }, 60000)
 
     var config = {
         apiKey: "AIzaSyC5xcF9mDRgorYXHdxoXEoHaJoLRzLORSg",
@@ -22,13 +23,6 @@ $(document).ready(function() {
       
     firebase.initializeApp(config);
     var database = firebase.database();
-
-    // database.ref().once("value", function(snapshot) {
-    //     console.log(snapshot.val())
-    //     snapshot.forEach(function(childSnapshot) {
-    //         console.log(childSnapshot.val().frequency)
-    //     })
-    // })
 
     var nextTrain = function(initialTime, freq) {
         var initialTime = moment(initialTime, "HH:mm").subtract(1, "years");
@@ -62,12 +56,17 @@ $(document).ready(function() {
         nextTrainIn = incomingTrain[0];
         nextArrivalTime = incomingTrain[1];
 
-        $("tbody").append("<tr class='data-row'>" + 
-        "<th scope='row'>" + childSnapshot.val().name +
-        "</th><td>" + childSnapshot.val().destination +
-        "</td><td class='freq'>" + childSnapshot.val().frequency +
-        "</td><td>" + nextArrivalTime +
-        "</td><td>" + nextTrainIn +
-        "</td></tr>");
+        var newRow = $("<tr class='data-row'>");
+        newRow.attr("data-init", childSnapshot.val().start);
+        newRow.append(
+            "<th scope='row'>" + childSnapshot.val().name +
+            "</th></th><td>" + childSnapshot.val().destination +
+            "</td><td class='freq'>" + childSnapshot.val().frequency +
+            "</td><td>" + nextArrivalTime +
+            "</td><td>" + nextTrainIn +
+            "</td></tr>"
+        );
+
+        $("tbody").append(newRow);
     })
 })
